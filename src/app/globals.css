@@ -26,7 +26,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: 300;
   letter-spacing: -0.02em;
 }
@@ -45,11 +48,42 @@ p {
   padding: 120px 24px;
 }
 
+/* Custom Cursor Hide Default */
+@media (pointer: fine) {
+
+  body,
+  a,
+  button {
+    cursor: none !important;
+  }
+}
+
+.parallax-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  z-index: -1;
+  pointer-events: none;
+}
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fade-in {
-  animation: fadeIn 1s ease-out forwards;
+  opacity: 0;
+}
+
+.reveal-grid>* {
+  opacity: 0;
 }

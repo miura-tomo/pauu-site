@@ -1,183 +1,263 @@
+'use client';
+
 import Image from "next/image";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
+import CustomCursor from "@/components/CustomCursor";
 
 export default function Home() {
+  const heroRef = useRef(null);
+  const serviceRef = useRef(null);
+
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
+
+  // Parallax effects
+  const heroY = useTransform(smoothProgress, [0, 0.2], [0, -100]);
+  const serviceY = useTransform(smoothProgress, [0.1, 0.4], [50, -50]);
+
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-white dark:bg-black selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+      <CustomCursor />
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 mix-blend-difference px-8 py-6 flex justify-between items-center">
-        <div className="text-xl font-light tracking-widest uppercase">Pauu Intelligence</div>
-        <div className="hidden md:flex space-x-12 text-sm font-light tracking-widest uppercase">
-          <a href="#about" className="hover:opacity-50 transition-opacity">About</a>
-          <a href="#service" className="hover:opacity-50 transition-opacity">Service</a>
-          <a href="#testimonials" className="hover:opacity-50 transition-opacity">Clients</a>
-          <a href="#blog" className="hover:opacity-50 transition-opacity">Thinking</a>
-          <a href="#contact" className="hover:opacity-50 transition-opacity">Contact</a>
+      <nav className="fixed top-0 left-0 w-full z-50 mix-blend-difference px-8 py-6 flex justify-between items-center text-white">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="text-xl font-light tracking-[0.3em] uppercase"
+        >
+          Pauu Intelligence
+        </motion.div>
+        <div className="hidden md:flex space-x-12 text-xs font-light tracking-[0.2em] uppercase">
+          {["About", "Service", "Clients", "Thinking", "Contact"].map((item, i) => (
+            <motion.a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * i }}
+              className="hover:opacity-50 transition-opacity"
+            >
+              {item}
+            </motion.a>
+          ))}
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden bg-white dark:bg-black">
-        <div className="container mx-auto px-8 grid md:grid-cols-2 gap-12 items-center">
-          <div className="fade-in">
-            <h1 className="text-6xl md:text-8xl mb-8 leading-tight">
-              Logic meets <br />
-              <span className="text-gray-400 italic">Vision.</span>
-            </h1>
-            <p className="max-w-md text-lg mb-12">
+      <section ref={heroRef} id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
+        <motion.div
+          style={{ y: heroY }}
+          className="container mx-auto px-8 grid md:grid-cols-2 gap-12 items-center relative z-10"
+        >
+          <div>
+            <motion.h1
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="text-6xl md:text-9xl mb-8 leading-tight font-light"
+            >
+              Logic <br />
+              <span className="text-gray-300 italic dark:text-zinc-700">Vision.</span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 1 }}
+              className="max-w-md text-lg mb-12 text-gray-400"
+            >
               高度なテクノロジーと洗練された思考。私たちは、未来をデザインする知的なパートナーです。
-            </p>
-            <div className="h-px w-24 bg-black dark:bg-white mb-4"></div>
-            <div className="text-xs tracking-widest uppercase">Technological Leadership</div>
+            </motion.p>
           </div>
-          <div className="relative aspect-square fade-in" style={{ animationDelay: '0.2s' }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="relative aspect-square"
+          >
             <Image
               src="/hero.png"
               alt="Intellectual Pauu"
               fill
-              className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
+              className="object-contain"
               priority
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Background Light Effect */}
+        <div className="absolute inset-0 bg-radial-gradient from-gray-50 to-white dark:from-zinc-900 dark:to-black z-0 opacity-50" />
       </section>
 
       {/* About Section */}
-      <section id="about" className="section-padding bg-gray-50 dark:bg-zinc-950">
-        <div className="container mx-auto px-8">
-          <div className="max-w-4xl">
-            <h2 className="text-4xl md:text-6xl mb-16">Intelligence. Integrity. Innovation.</h2>
+      <section id="about" className="section-padding bg-zinc-50 dark:bg-zinc-950 relative overflow-hidden">
+        <div className="container mx-auto px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-4xl"
+          >
+            <h2 className="text-5xl md:text-7xl mb-16 leading-tight">Intelligence.<br />Integrity.<br />Innovation.</h2>
             <div className="grid md:grid-cols-2 gap-24">
-              <p className="text-xl leading-relaxed">
-                私たちは、従来の「可愛い」の枠を超え、知的でミニマルなアプローチでビジネスの課題を解決します。細部へのこだわりと、圧倒的な余白が、真の美しさと信頼を生み出します。
+              <p className="text-xl leading-relaxed text-zinc-600 dark:text-zinc-400">
+                従来の枠を超え、知的でミニマルなアプローチでビジネスの課題を解決します。細部へのこだわりと、圧倒的な余白が、真の美しさと信頼を生み出します。
               </p>
-              <div className="space-y-8 font-light text-sm uppercase tracking-widest">
-                <div>
-                  <div className="text-gray-400 mb-2">01 / Strategy</div>
-                  <div>データに基づいた緻密な戦略設計</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 mb-2">02 / Design</div>
-                  <div>本質を突いたミニマルな視覚表現</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 mb-2">03 / Code</div>
-                  <div>堅牢で美しいシステム構築</div>
-                </div>
+              <div className="space-y-12 font-light text-xs uppercase tracking-[0.3em]">
+                {["Strategy", "Design", "Code"].map((item, i) => (
+                  <motion.div
+                    key={item}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.2 }}
+                    viewport={{ once: true }}
+                    className="border-t border-zinc-200 dark:border-zinc-800 pt-6"
+                  >
+                    <div className="text-zinc-400 mb-2">0{i + 1} / {item}</div>
+                    <div className="text-lg normal-case tracking-normal">
+                      {i === 0 && "データに基づいた緻密な戦略設計"}
+                      {i === 1 && "本質を突いたミニマルな視覚表現"}
+                      {i === 2 && "堅牢で美しいシステム構築"}
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Service Section */}
-      <section id="service" className="section-padding">
+      <section ref={serviceRef} id="service" className="section-padding overflow-hidden">
         <div className="container mx-auto px-8">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="order-2 md:order-1 relative aspect-square">
+          <div className="grid md:grid-cols-2 gap-24 items-center">
+            <motion.div
+              style={{ y: serviceY }}
+              className="relative aspect-square"
+            >
               <Image
                 src="/service.png"
                 alt="Professional Pauu"
                 fill
-                className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
+                className="object-contain"
               />
-            </div>
-            <div className="order-1 md:order-2">
-              <h2 className="text-4xl md:text-6xl mb-8">Strategic <br />Solutions</h2>
-              <p className="mb-12 text-lg">
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-5xl md:text-7xl mb-8 leading-tight">Strategic<br />Solutions</h2>
+              <p className="mb-12 text-lg text-zinc-500">
                 複雑な情報を整理し、価値を最大限に引き出すための専門的な分析と提案を行います。
               </p>
-              <ul className="space-y-6">
+              <ul className="grid gap-8">
                 {[
                   "マーケット市場調査とデータ分析",
                   "ブランドアイデンティティの構築",
                   "AIを活用した業務効率化支援",
                   "UX/UIデザインの最適化"
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center space-x-4 border-b border-gray-100 dark:border-zinc-800 pb-4">
-                    <span className="text-xs text-gray-400">0{i+1}</span>
-                    <span className="font-light">{item}</span>
-                  </li>
+                  <motion.li
+                    key={i}
+                    whileHover={{ x: 10 }}
+                    className="group flex items-center space-x-6 border-b border-zinc-100 dark:border-zinc-900 pb-6 cursor-pointer"
+                  >
+                    <span className="text-xs text-zinc-300 group-hover:text-black dark:group-hover:text-white transition-colors">0{i + 1}</span>
+                    <span className="text-xl font-light">{item}</span>
+                  </motion.li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section id="testimonials" className="section-padding bg-black text-white">
-        <div className="container mx-auto px-8 text-center">
-          <h2 className="text-3xl md:text-5xl mb-24 font-light">Client Voice</h2>
-          <div className="grid md:grid-cols-3 gap-16">
-            {[
-              { text: "ミニマルなデザインの中に、確かな知性を感じました。", author: "Tech Lead, Global Corp" },
-              { text: "期待以上の分析力と、洗練されたプレゼンテーションに驚きました。", author: "CEO, Creative Studio" },
-              { text: "細部まで妥協のない姿勢が、結果に直結しました。", author: "Product Manager, Startup" }
-            ].map((t, i) => (
-              <div key={i} className="space-y-6">
-                <p className="italic text-gray-400 font-light">&ldquo;{t.text}&rdquo;</p>
-                <div className="text-xs tracking-widest uppercase">{t.author}</div>
-              </div>
-            ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Blog Section */}
-      <section id="blog" className="section-padding">
+      <section id="blog" className="section-padding bg-zinc-950 text-white">
         <div className="container mx-auto px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-24">
-            <h2 className="text-4xl md:text-6xl">Latest <br />Insights</h2>
-            <div className="text-xs tracking-widest uppercase cursor-pointer hover:underline">View All Articles</div>
+          <div className="flex flex-col md:flex-row justify-between items-end mb-32">
+            <h2 className="text-5xl md:text-8xl font-thin">Insights</h2>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="text-xs tracking-[0.4em] uppercase opacity-50 cursor-pointer border-b border-white/20 pb-2"
+            >
+              View Archive
+            </motion.div>
           </div>
-          <div className="grid md:grid-cols-2 gap-24 items-center">
-            <div className="space-y-16">
+          <div className="grid md:grid-cols-2 gap-32 items-center">
+            <div className="space-y-20">
               {[
                 { date: "2026.03.01", title: "ミニマリズムがもたらす意思決定の速度" },
                 { date: "2026.02.15", title: "AIと共生する未来のクリエイティビティ" },
                 { date: "2026.01.20", title: "余白がビジネスの解像度を上げる理由" }
               ].map((post, i) => (
-                <div key={i} className="group cursor-pointer">
-                  <div className="text-xs text-gray-400 mb-2 uppercase tracking-tighter">{post.date}</div>
-                  <h3 className="text-2xl font-light group-hover:text-gray-400 transition-colors">{post.title}</h3>
-                </div>
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  viewport={{ once: true }}
+                  className="group cursor-pointer"
+                >
+                  <div className="text-xs text-zinc-600 mb-4 tracking-widest">{post.date}</div>
+                  <h3 className="text-3xl font-light group-hover:opacity-50 transition-all">{post.title}</h3>
+                </motion.div>
               ))}
             </div>
-            <div className="relative aspect-square">
+            <motion.div
+              whileHover={{ rotate: 1, scale: 1.02 }}
+              className="relative aspect-square grayscale brightness-110"
+            >
               <Image
                 src="/blog.png"
                 alt="Thinking Pauu"
                 fill
-                className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
+                className="object-contain"
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="section-padding bg-gray-50 dark:bg-zinc-950">
+      <section id="contact" className="section-padding bg-white dark:bg-black">
         <div className="container mx-auto px-8">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl md:text-6xl mb-8 font-light italic">Connect <br />with Us</h2>
-              <p className="mb-12">
-                新しいプロジェクトの相談、または知的で洗練されたサービスについての詳細。
-                私たちは常に、新しい出会いを求めています。
-              </p>
-              <div className="space-y-4">
-                <input type="text" placeholder="NAME" className="w-full bg-transparent border-b border-gray-300 dark:border-zinc-700 py-4 font-light focus:outline-none focus:border-black dark:focus:border-white transition-colors" />
-                <input type="email" placeholder="EMAIL" className="w-full bg-transparent border-b border-gray-300 dark:border-zinc-700 py-4 font-light focus:outline-none focus:border-black dark:focus:border-white transition-colors" />
-                <textarea rows={4} placeholder="MESSAGE" className="w-full bg-transparent border-b border-gray-300 dark:border-zinc-700 py-4 font-light focus:outline-none focus:border-black dark:focus:border-white transition-colors"></textarea>
-                <button className="mt-8 px-12 py-4 border border-black dark:border-white text-xs tracking-widest uppercase hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">Submit Inquiry</button>
+          <div className="grid md:grid-cols-2 gap-24 items-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-6xl md:text-8xl mb-12 font-light italic tracking-tighter text-zinc-300 dark:text-zinc-800">
+                Connect.
+              </h2>
+              <div className="space-y-12">
+                {["NAME", "EMAIL", "MESSAGE"].map((field) => (
+                  <div key={field} className="relative group">
+                    <input
+                      type={field === "EMAIL" ? "email" : "text"}
+                      placeholder={field}
+                      className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-6 font-light focus:outline-none focus:border-black dark:focus:border-white transition-all text-xl"
+                    />
+                  </div>
+                ))}
+                <motion.button
+                  whileHover={{ scale: 1.02, backgroundColor: "#000", color: "#fff" }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full md:w-auto px-20 py-6 border border-black dark:border-white text-xs tracking-[0.5em] uppercase transition-all"
+                >
+                  Join the Future
+                </motion.button>
               </div>
-            </div>
-            <div className="relative aspect-square">
+            </motion.div>
+            <div className="relative aspect-[3/4]">
               <Image
                 src="/contact.png"
                 alt="Contact Pauu"
                 fill
-                className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
+                className="object-contain"
               />
             </div>
           </div>
@@ -185,9 +265,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-24 border-t border-gray-100 dark:border-zinc-800 text-center">
-        <div className="text-xs tracking-[0.4em] uppercase font-light text-gray-400">
-          © 2026 Pauu Intelligence. All Rights Reserved.
+      <footer className="py-20 border-t border-zinc-100 dark:border-zinc-900 text-center">
+        <div className="text-[10px] tracking-[0.6em] uppercase font-light text-zinc-400">
+          © 2026 Pauu Intelligence / Defined by Vision.
         </div>
       </footer>
     </main>
